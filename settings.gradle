@@ -1,0 +1,3 @@
+rootProject.name = "EAModels"
+include ':app'
+include ':eamodels'
