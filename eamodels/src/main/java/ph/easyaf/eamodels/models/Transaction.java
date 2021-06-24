@@ -10,6 +10,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Locale;
 
 import ph.easyaf.eamodels.utils.DateTimeConverter;
 
@@ -130,7 +131,7 @@ public class Transaction extends EasyAFModel {
     public void setReservations(ArrayList<Reservation> reservations) { this.reservations = reservations; }
 
     public String getTransactionNo() {
-        return reservedBy + "-" + id;
+        return String.format(Locale.getDefault(), "%s-%08d", reservedBy, id);
     }
 
     public double getTotalFare() {
