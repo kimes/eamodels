@@ -89,6 +89,7 @@ public class Transaction extends EasyAFModel {
             object.put("payment_remarks", paymentRemarks);
             object.put("merchant", merchant);
             object.put("reserved_date", DateTimeConverter.toISODateUtc(reservedDate));
+            object.put("transaction_number", getTransactionNo());
 
             JSONArray reservationList = new JSONArray();
             for (int i = 0; i < reservations.size(); i++) {
@@ -127,6 +128,10 @@ public class Transaction extends EasyAFModel {
     public void setTrip(Trip trip) { this.trip = trip; }
     public void setReservedDate(Date reservedDate) { this.reservedDate = reservedDate; }
     public void setReservations(ArrayList<Reservation> reservations) { this.reservations = reservations; }
+
+    public String getTransactionNo() {
+        return reservedBy + "-" + id;
+    }
 
     public double getTotalFare() {
         double totalFare = 0d;
