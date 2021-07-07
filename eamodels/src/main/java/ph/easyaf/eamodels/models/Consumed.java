@@ -18,7 +18,7 @@ public class Consumed implements Parcelable {
 
     private int id, status = 0, sendStatus = 0;
     private String mongoId = "", origin, destination, personnelCode, tripNo, vehicle = "Bus",
-        merchant, name;
+        merchant, name, consumedBy;
     private Date tripDateTime = Calendar.getInstance().getTime(),
             startDateTime = null, endDateTime = null;
     private ObservableArrayList<Validation> validations = new ObservableArrayList<>();
@@ -36,6 +36,7 @@ public class Consumed implements Parcelable {
             if (object.has("vehicle")) vehicle = object.getString("vehicle");
             if (object.has("merchant")) merchant = object.getString("merchant");
             if (object.has("name")) name = object.getString("name");
+            if (object.has("consumed_by")) consumedBy = object.getString("consumed_by");
             if (object.has("trip_date_time"))
                 tripDateTime = DateTimeConverter.toDateUtc(object.getString("trip_date_time"));
             if (object.has("start_date_time"))
@@ -67,7 +68,7 @@ public class Consumed implements Parcelable {
         startDateTime = (longs[1] > 0) ? new Date(longs[1]) : null;
         endDateTime = (longs[2] > 0) ? new Date(longs[2]) : null;
 
-        String[] strings = new String[8];
+        String[] strings = new String[9];
         parcel.readStringArray(strings);
         mongoId = strings[0];
         origin = strings[1];
@@ -77,6 +78,7 @@ public class Consumed implements Parcelable {
         vehicle = strings[5];
         merchant = strings[6];
         name = strings[7];
+        consumedBy = strings[8];
 
         ObservableArrayList<Validation> validationList = new ObservableArrayList<>();
         parcel.readTypedList(validationList, Validation.CREATOR);
@@ -89,7 +91,7 @@ public class Consumed implements Parcelable {
                 (startDateTime != null) ? startDateTime.getTime() : 0,
                 (endDateTime != null) ? endDateTime.getTime() : 0 });
         parcel.writeStringArray(new String[] { mongoId, origin, destination,
-                personnelCode, tripNo, vehicle, merchant, name });
+                personnelCode, tripNo, vehicle, merchant, name, consumedBy });
         parcel.writeTypedList(validations);
     }
 
@@ -106,6 +108,7 @@ public class Consumed implements Parcelable {
             object.put("vehicle", vehicle);
             object.put("merchant", merchant);
             object.put("name", name);
+            object.put("consumed_by", consumedBy);
             if (startDateTime != null) object.put("start_date_time", DateTimeConverter.toISODateUtc(startDateTime));
             if (endDateTime != null) object.put("end_date_time", DateTimeConverter.toISODateUtc(endDateTime));
         } catch (JSONException e) {
@@ -127,6 +130,7 @@ public class Consumed implements Parcelable {
     public String getVehicle() { return vehicle; }
     public String getMerchant() { return merchant; }
     public String getName() { return name; }
+    public String getConsumedBy() { return consumedBy; }
     public Date getTripDateTime() { return tripDateTime; }
     public Date getStartDateTime() { return startDateTime; }
     public Date getEndDateTime() { return endDateTime; }
@@ -142,6 +146,7 @@ public class Consumed implements Parcelable {
     public void setVehicle(String vehicle) { this.vehicle = vehicle; }
     public void setMerchant(String merchant) { this.merchant = merchant; }
     public void setName(String name) { this.name = name; }
+    public void setConsumedBy(String consumedBy) { this.consumedBy = consumedBy; }
     public void setTripDateTime(Date tripDateTime) { this.tripDateTime = tripDateTime; }
     public void setStartDateTime(Date startDateTime) { this.startDateTime = startDateTime; }
     public void setEndDateTime(Date endDateTime) { this.endDateTime = endDateTime; }
