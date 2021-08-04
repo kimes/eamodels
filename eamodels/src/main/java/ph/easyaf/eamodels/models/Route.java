@@ -4,6 +4,9 @@ import android.os.Parcel;
 
 import androidx.databinding.Bindable;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import ph.easyaf.eamodels.BR;
 
 public class Route extends EasyAFModel {
@@ -46,6 +49,15 @@ public class Route extends EasyAFModel {
         name = route.getName();
     }
 
+    public Route(JSONObject object) {
+        try {
+            if (object.has("fare_deduct")) fareDeduct = object.getDouble("fare_deduct");
+            if (object.has("name")) name = object.getString("name");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
     public boolean isSame(Route route) {
         if (id != route.getId()) return false;
         if (type != route.getType()) return false;
@@ -59,6 +71,17 @@ public class Route extends EasyAFModel {
         parcel.writeIntArray(new int[] { id, type });
         parcel.writeDouble(fareDeduct);
         parcel.writeString(name);
+    }
+
+    public JSONObject toJSON() {
+        JSONObject object = new JSONObject();
+        try {
+            object.put("fare_deduct", fareDeduct);
+            object.put("name", name);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return object;
     }
 
     public int describeContents() { return 0; }

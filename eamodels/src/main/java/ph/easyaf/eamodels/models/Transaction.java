@@ -18,7 +18,7 @@ public class Transaction extends EasyAFModel {
 
     private int status;
     private String mongoId = "", boarding, dropping, reservedBy,
-            referenceNo, paymentType, paymentRemarks, merchant;
+            referenceNo, paymentType, paymentRemarks, remarks, liner = "", merchant = "";
     private Date reservedDate = Calendar.getInstance().getTime();
     private Trip trip = new Trip();
     private ArrayList<Reservation> reservations = new ArrayList<>();
@@ -33,6 +33,8 @@ public class Transaction extends EasyAFModel {
             if (object.has("reference_number")) referenceNo = object.getString("reference_number");
             if (object.has("payment_type")) paymentType = object.getString("payment_type");
             if (object.has("payment_remarks")) paymentRemarks = object.getString("payment_remarks");
+            if (object.has("remarks")) remarks = object.getString("remarks");
+            if (object.has("liner")) liner = object.getString("liner");
             if (object.has("merchant")) merchant = object.getString("merchant");
             if (object.has("reserved_date"))
                 reservedDate = DateTimeConverter.toDateUtc(object.getString("reserved_date"));
@@ -57,14 +59,16 @@ public class Transaction extends EasyAFModel {
         parcel.readLongArray(longs);
         reservedDate = new Date(longs[0]);
 
-        String[] strings = new String[6];
+        String[] strings = new String[8];
         parcel.readStringArray(strings);
         mongoId = strings[0];
         reservedBy = strings[1];
         referenceNo = strings[2];
         paymentType = strings[3];
         paymentRemarks = strings[4];
-        merchant = strings[5];
+        remarks = strings[5];
+        liner = strings[6];
+        merchant = strings[7];
 
         ArrayList<Reservation> reservationList = new ArrayList<>();
         parcel.readTypedList(reservationList, Reservation.CREATOR);
@@ -75,7 +79,7 @@ public class Transaction extends EasyAFModel {
         parcel.writeIntArray(new int[] { status });
         parcel.writeLongArray(new long[] { reservedDate.getTime() });
         parcel.writeStringArray(new String[] { mongoId, reservedBy, referenceNo,
-            paymentType, paymentRemarks, merchant });
+            paymentType, paymentRemarks, remarks, liner, merchant });
         parcel.writeTypedList(reservations);
     }
 
@@ -88,6 +92,8 @@ public class Transaction extends EasyAFModel {
             object.put("reference_number", referenceNo);
             object.put("payment_type", paymentType);
             object.put("payment_remarks", paymentRemarks);
+            object.put("remarks", remarks);
+            object.put("liner", liner);
             object.put("merchant", merchant);
             object.put("reserved_date", DateTimeConverter.toISODateUtc(reservedDate));
             object.put("transaction_number", getTransactionNo());
@@ -113,6 +119,8 @@ public class Transaction extends EasyAFModel {
     public String getReferenceNo() { return referenceNo; }
     public String getPaymentType() { return paymentType; }
     public String getPaymentRemarks() { return paymentRemarks; }
+    public String getRemarks() { return remarks; }
+    public String getLiner() { return liner; }
     public String getMerchant() { return merchant; }
     public Trip getTrip() { return trip; }
     public Date getReservedDate() { return reservedDate; }
@@ -125,6 +133,8 @@ public class Transaction extends EasyAFModel {
     public void setReferenceNo(String referenceNo) { this.referenceNo = referenceNo; }
     public void setPaymentType(String paymentType) { this.paymentType = paymentType; }
     public void setPaymentRemarks(String paymentRemarks) { this.paymentRemarks = paymentRemarks; }
+    public void setRemarks(String remarks) { this.remarks = remarks; }
+    public void setLiner(String liner) { this.liner = liner; }
     public void setMerchant(String merchant) { this.merchant = merchant; }
     public void setTrip(Trip trip) { this.trip = trip; }
     public void setReservedDate(Date reservedDate) { this.reservedDate = reservedDate; }

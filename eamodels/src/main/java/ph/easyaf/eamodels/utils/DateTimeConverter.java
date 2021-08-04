@@ -20,6 +20,12 @@ public class DateTimeConverter {
         return String.format("%s", timeFormatter.format(date));
     }
 
+    public static String toISODate(Date date) {
+        if (date == null) return "";
+        SimpleDateFormat formatter = new SimpleDateFormat(ISO_FORMAT, Locale.getDefault());
+        return String.format("%s", formatter.format(date));
+    }
+
     public static String toISODateUtc(Date date) {
         if (date == null) return "";
         SimpleDateFormat formatter = new SimpleDateFormat(ISO_FORMAT, Locale.getDefault());

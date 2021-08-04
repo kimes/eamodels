@@ -17,8 +17,8 @@ import ph.easyaf.eamodels.utils.DateTimeConverter;
 public class Consumed implements Parcelable {
 
     private int id, status = 0, sendStatus = 0;
-    private String mongoId = "", origin, destination, personnelCode, tripNo, vehicle = "Bus",
-        merchant, name, consumedBy;
+    private String mongoId = "", origin, destination, personnelCode, tripNo, referenceNo,
+            liner = "", merchant = "", vehicle = "Bus", name, consumedBy;
     private Date tripDateTime = Calendar.getInstance().getTime(),
             startDateTime = null, endDateTime = null;
     private ObservableArrayList<Validation> validations = new ObservableArrayList<>();
@@ -33,8 +33,10 @@ public class Consumed implements Parcelable {
             if (object.has("destination")) destination = object.getString("destination");
             if (object.has("personnel_code")) personnelCode = object.getString("personnel_code");
             if (object.has("trip_no")) tripNo = object.getString("trip_no");
-            if (object.has("vehicle")) vehicle = object.getString("vehicle");
+            if (object.has("reference_number")) referenceNo = object.getString("reference_number");
+            if (object.has("liner")) liner = object.getString("liner");
             if (object.has("merchant")) merchant = object.getString("merchant");
+            if (object.has("vehicle")) vehicle = object.getString("vehicle");
             if (object.has("name")) name = object.getString("name");
             if (object.has("consumed_by")) consumedBy = object.getString("consumed_by");
             if (object.has("trip_date_time"))
@@ -68,17 +70,19 @@ public class Consumed implements Parcelable {
         startDateTime = (longs[1] > 0) ? new Date(longs[1]) : null;
         endDateTime = (longs[2] > 0) ? new Date(longs[2]) : null;
 
-        String[] strings = new String[9];
+        String[] strings = new String[11];
         parcel.readStringArray(strings);
         mongoId = strings[0];
         origin = strings[1];
         destination = strings[2];
         personnelCode = strings[3];
         tripNo = strings[4];
-        vehicle = strings[5];
-        merchant = strings[6];
-        name = strings[7];
-        consumedBy = strings[8];
+        referenceNo = strings[5];
+        liner = strings[6];
+        merchant = strings[7];
+        vehicle = strings[8];
+        name = strings[9];
+        consumedBy = strings[10];
 
         ObservableArrayList<Validation> validationList = new ObservableArrayList<>();
         parcel.readTypedList(validationList, Validation.CREATOR);
@@ -91,7 +95,7 @@ public class Consumed implements Parcelable {
                 (startDateTime != null) ? startDateTime.getTime() : 0,
                 (endDateTime != null) ? endDateTime.getTime() : 0 });
         parcel.writeStringArray(new String[] { mongoId, origin, destination,
-                personnelCode, tripNo, vehicle, merchant, name, consumedBy });
+                personnelCode, tripNo, referenceNo, liner, merchant, vehicle, name, consumedBy });
         parcel.writeTypedList(validations);
     }
 
@@ -99,14 +103,16 @@ public class Consumed implements Parcelable {
         JSONObject object = new JSONObject();
         try {
             if (!mongoId.isEmpty()) object.put("_id", mongoId);
+            object.put("status", status);
             object.put("origin", origin);
             object.put("destination", destination);
             object.put("personnel_code", personnelCode);
             object.put("trip_no", tripNo);
             object.put("trip_date_time", DateTimeConverter.toISODateUtc(tripDateTime));
-            object.put("status", status);
-            object.put("vehicle", vehicle);
+            object.put("reference_number", referenceNo);
+            object.put("liner", liner);
             object.put("merchant", merchant);
+            object.put("vehicle", vehicle);
             object.put("name", name);
             object.put("consumed_by", consumedBy);
             if (startDateTime != null) object.put("start_date_time", DateTimeConverter.toISODateUtc(startDateTime));
@@ -127,8 +133,10 @@ public class Consumed implements Parcelable {
     public String getDestination() { return destination; }
     public String getPersonnelCode() { return personnelCode; }
     public String getTripNo() { return tripNo; }
-    public String getVehicle() { return vehicle; }
+    public String getReferenceNo() { return referenceNo; }
+    public String getLiner() { return liner; }
     public String getMerchant() { return merchant; }
+    public String getVehicle() { return vehicle; }
     public String getName() { return name; }
     public String getConsumedBy() { return consumedBy; }
     public Date getTripDateTime() { return tripDateTime; }
@@ -143,8 +151,10 @@ public class Consumed implements Parcelable {
     public void setDestination(String destination) { this.destination = destination; }
     public void setPersonnelCode(String personnelCode) { this.personnelCode = personnelCode; }
     public void setTripNo(String tripNo) { this.tripNo = tripNo; }
-    public void setVehicle(String vehicle) { this.vehicle = vehicle; }
+    public void setReferenceNo(String referenceNo) { this.referenceNo = referenceNo; }
+    public void setLiner(String liner) { this.liner = liner; }
     public void setMerchant(String merchant) { this.merchant = merchant; }
+    public void setVehicle(String vehicle) { this.vehicle = vehicle; }
     public void setName(String name) { this.name = name; }
     public void setConsumedBy(String consumedBy) { this.consumedBy = consumedBy; }
     public void setTripDateTime(Date tripDateTime) { this.tripDateTime = tripDateTime; }
