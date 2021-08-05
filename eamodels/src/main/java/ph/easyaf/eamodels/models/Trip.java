@@ -27,7 +27,7 @@ public class Trip extends EasyAFModel {
             merchant = "", vehicle = "Bus";
 
     @Bindable
-    private Date time, startDate, expiresDate;
+    private Date date, time, startDate, expiresDate;
 
     @Bindable
     private ObservableArrayList<Route> boardings = new ObservableArrayList<>(),
@@ -52,11 +52,12 @@ public class Trip extends EasyAFModel {
 
         fare = parcel.readDouble();
 
-        long[] longs = new long[3];
+        long[] longs = new long[4];
         parcel.readLongArray(longs);
-        time = (longs[0] > 0) ? new Date(longs[0]) : null;
-        startDate = (longs[1] > 0) ? new Date(longs[1]) : null;
-        expiresDate = (longs[2] > 0) ? new Date(longs[2]) : null;
+        date = (longs[0] > 0) ? new Date(longs[0]) : null;
+        time = (longs[1] > 1) ? new Date(longs[1]) : null;
+        startDate = (longs[2] > 0) ? new Date(longs[2]) : null;
+        expiresDate = (longs[3] > 0) ? new Date(longs[3]) : null;
 
         String[] strings = new String[6];
         parcel.readStringArray(strings);
@@ -108,6 +109,8 @@ public class Trip extends EasyAFModel {
             if (object.has("merchant")) merchant = object.getString("merchant");
             if (object.has("vehicle")) vehicle = object.getString("vehicle");
 
+            if (object.has("date"))
+                date = DateTimeConverter.toDateUtc(object.getString("date"));
             if (object.has("time"))
                 time = DateTimeConverter.toDateUtc(object.getString("time"));
             if (object.has("start_date"))
@@ -212,6 +215,7 @@ public class Trip extends EasyAFModel {
         parcel.writeIntArray(new int[] { id, maxSeats });
         parcel.writeDouble(fare);
         parcel.writeLongArray(new long[] {
+                (date != null) ? date.getTime() : 0,
                 (time != null) ? time.getTime() : 0,
                 (startDate != null) ? startDate.getTime() : 0,
                 (expiresDate != null) ? expiresDate.getTime() : 0 });
@@ -265,6 +269,7 @@ public class Trip extends EasyAFModel {
     public String getLiner() { return liner; }
     public String getMerchant() { return merchant; }
     public String getVehicle() { return vehicle; }
+    public Date getDate() { return date; }
     public Date getTime() { return time; }
     public Date getStartDate() { return startDate; }
     public Date getExpiresDate() { return expiresDate; }
@@ -305,6 +310,10 @@ public class Trip extends EasyAFModel {
     public void setVehicle(String vehicle) {
         this.vehicle = vehicle;
         notifyPropertyChanged(BR.vehicle);
+    }
+    public void setDate(Date date) {
+        this.date = date;
+        notifyPropertyChanged(BR.date);
     }
     public void setTime(Date time) {
         this.time = time;
