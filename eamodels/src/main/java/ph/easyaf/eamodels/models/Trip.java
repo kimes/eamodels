@@ -110,7 +110,7 @@ public class Trip extends EasyAFModel {
             if (object.has("vehicle")) vehicle = object.getString("vehicle");
 
             if (object.has("date"))
-                date = DateTimeConverter.toDateUtc(object.getString("date"));
+                date = DateTimeConverter.toDate(object.getString("date"));
             if (object.has("time"))
                 time = DateTimeConverter.toDateUtc(object.getString("time"));
             if (object.has("start_date"))
