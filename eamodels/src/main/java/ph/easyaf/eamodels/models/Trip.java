@@ -119,14 +119,14 @@ public class Trip extends EasyAFModel {
                 expiresDate = DateTimeConverter.toDateUtc(object.getString("expires_date"));
 
             if (object.has("boardings")) {
-                JSONArray boardingsList = new JSONArray(object.getJSONArray("boardings"));
+                JSONArray boardingsList = object.getJSONArray("boardings");
                 for (int i = 0; i < boardingsList.length(); i++) {
                     boardings.add(new Route(boardingsList.getJSONObject(i)));
                 }
             }
 
             if (object.has("dropOffs")) {
-                JSONArray dropOffsList = new JSONArray(object.getJSONArray("dropOffs"));
+                JSONArray dropOffsList = object.getJSONArray("dropOffs");
                 for (int i = 0; i < dropOffsList.length(); i++) {
                     dropOffs.add(new Route(dropOffsList.getJSONObject(i)));
                 }
