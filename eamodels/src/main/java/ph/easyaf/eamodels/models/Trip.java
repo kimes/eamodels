@@ -19,7 +19,7 @@ public class Trip extends EasyAFModel {
     @Bindable
     private boolean enabled = true;
     @Bindable
-    private int maxSeats = 0;
+    private int maxSeats = 0, reservationCount = 0;
     @Bindable
     private double fare;
     @Bindable
@@ -45,10 +45,11 @@ public class Trip extends EasyAFModel {
         parcel.readBooleanArray(booleans);
         enabled = booleans[0];
 
-        int[] ints = new int[2];
+        int[] ints = new int[3];
         parcel.readIntArray(ints);
         id = ints[0];
         maxSeats = ints[1];
+        reservationCount = ints[2];
 
         fare = parcel.readDouble();
 
@@ -81,6 +82,7 @@ public class Trip extends EasyAFModel {
         id = trip.getId();
         enabled = trip.isEnabled();
         maxSeats = trip.getMaxSeats();
+        reservationCount = trip.getReservationCount();
         fare = trip.getFare();
         mongoId = trip.getMongoId();
         origin = trip.getOrigin();
@@ -102,6 +104,7 @@ public class Trip extends EasyAFModel {
         try {
             if (object.has("_id")) mongoId = object.getString("_id");
             if (object.has("max_seats")) maxSeats = object.getInt("max_seats");
+            if (object.has("reservation_count")) reservationCount = object.getInt("reservation_count");
             if (object.has("fare")) fare = object.getDouble("fare");
             if (object.has("origin")) origin = object.getString("origin");
             if (object.has("destination")) destination = object.getString("destination");
@@ -144,6 +147,8 @@ public class Trip extends EasyAFModel {
         //notifyPropertyChanged(BR.enabled);
 
         maxSeats = trip.getMaxSeats();
+
+        reservationCount = trip.getReservationCount();
 
         fare = trip.getFare();
         //notifyPropertyChanged(BR.fare);
@@ -212,7 +217,7 @@ public class Trip extends EasyAFModel {
 
     public void writeToParcel(Parcel parcel, int flags) {
         parcel.writeBooleanArray(new boolean[] { enabled });
-        parcel.writeIntArray(new int[] { id, maxSeats });
+        parcel.writeIntArray(new int[] { id, maxSeats, reservationCount });
         parcel.writeDouble(fare);
         parcel.writeLongArray(new long[] {
                 (date != null) ? date.getTime() : 0,
@@ -262,6 +267,7 @@ public class Trip extends EasyAFModel {
 
     public boolean isEnabled() { return enabled; }
     public int getMaxSeats() { return maxSeats; }
+    public int getReservationCount() { return reservationCount; }
     public double getFare() { return fare; }
     public String getMongoId() { return mongoId; }
     public String getOrigin() { return origin; }
@@ -283,6 +289,10 @@ public class Trip extends EasyAFModel {
     public void setMaxSeats(int maxSeats) {
         this.maxSeats = maxSeats;
         notifyPropertyChanged(BR.maxSeats);
+    }
+    public void setReservationCount(int reservationCount) {
+        this.reservationCount = reservationCount;
+        notifyPropertyChanged(BR.reservationCount);
     }
     public void setFare(double fare) {
         this.fare = fare;
