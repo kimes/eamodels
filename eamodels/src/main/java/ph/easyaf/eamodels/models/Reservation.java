@@ -66,17 +66,21 @@ public class Reservation extends EasyAFModel {
     public Reservation(JSONObject object) {
         try {
             // if object is in qr code
-            if (object.has("pt")) passengerType = object.getInt("pt");
-            if (object.has("s")) seat = object.getInt("s");
-            if (object.has("f")) fare = object.getDouble("f");
+            if (object.has("tid")) transactionId = object.getString("tid");
             if (object.has("o")) origin = object.getString("o");
             if (object.has("d")) destination = object.getString("d");
             if (object.has("b")) boarding = object.getString("b");
             if (object.has("do")) dropping = object.getString("do");
+            if (object.has("f")) fare = object.getDouble("f");
             if (object.has("rn")) referenceNo = object.getString("rn");
+            if (object.has("pt")) passengerType = object.getInt("pt");
+            if (object.has("s")) seat = object.getInt("s");
             if (object.has("v")) vehicle = object.getString("v");
-            if (object.has("tid")) transactionId = object.getString("tid");
+            if (object.has("m")) merchant = object.getString("m");
+            if (object.has("l")) liner = object.getString("l");
             if (object.has("rd")) reservedDate = DateTimeConverter.toDateUtc(object.getString("rd"));
+            if (object.has("td")) tripDate = DateTimeConverter.toDate(object.getString("td"));
+            if (object.has("tt")) tripTime = DateTimeConverter.toDateUtc(object.getString("td"));
 
             // if in server
             if (object.has("_id")) mongoId = object.getString("_id");
