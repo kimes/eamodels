@@ -80,7 +80,7 @@ public class Reservation extends EasyAFModel {
             if (object.has("l")) liner = object.getString("l");
             if (object.has("rd")) reservedDate = DateTimeConverter.toDateUtc(object.getString("rd"));
             if (object.has("td")) tripDate = DateTimeConverter.toDate(object.getString("td"));
-            if (object.has("tt")) tripTime = DateTimeConverter.toDateUtc(object.getString("td"));
+            if (object.has("tt")) tripTime = DateTimeConverter.toDateUtc(object.getString("tt"));
 
             // if in server
             if (object.has("_id")) mongoId = object.getString("_id");
