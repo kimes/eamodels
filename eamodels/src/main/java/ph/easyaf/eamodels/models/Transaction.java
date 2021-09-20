@@ -238,6 +238,26 @@ public class Transaction extends EasyAFModel {
         return summary;
     }
 
+    public ArrayList<Reservation> getRegularReservations() {
+        ArrayList<Reservation> regulars = new ArrayList<>();
+        for (int i = 0; i < reservations.size(); i++) {
+            if (reservations.get(i).getPassengerType() == 0) {
+                regulars.add(reservations.get(i));
+            }
+        }
+        return regulars;
+    }
+
+    public ArrayList<Reservation> getDiscountedReservations() {
+        ArrayList<Reservation> discounts = new ArrayList<>();
+        for (int i = 0; i < reservations.size(); i++) {
+            if (reservations.get(i).getPassengerType() == 1) {
+                discounts.add(reservations.get(i));
+            }
+        }
+        return discounts;
+    }
+
     public static final Parcelable.Creator<Transaction> CREATOR = new Parcelable.Creator<Transaction>() {
         public Transaction createFromParcel(Parcel parcel) { return new Transaction(parcel); }
         public Transaction[] newArray(int size) { return new Transaction[size]; }
