@@ -18,10 +18,13 @@ public class Trip extends EasyAFModel {
 
     @Bindable
     private boolean enabled = true;
+
     @Bindable
     private int maxSeats = 0, reservationCount = 0;
+
     @Bindable
     private double fare;
+
     @Bindable
     private String mongoId = "", origin = "", destination = "", liner = "",
             merchant = "", vehicle = "Bus";

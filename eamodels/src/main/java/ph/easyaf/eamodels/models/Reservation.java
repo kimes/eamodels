@@ -3,6 +3,9 @@ package ph.easyaf.eamodels.models;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import androidx.databinding.Bindable;
+import androidx.databinding.library.baseAdapters.BR;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -18,6 +21,10 @@ public class Reservation extends EasyAFModel {
     private String mongoId = "", origin = "", destination = "",
             boarding = "", dropping = "", referenceNo = "", trip = "",
             liner = "", merchant = "", vehicle = "", transactionId = "";
+
+    @Bindable
+    private String mobile = "";
+    private Name name = new Name();
     private Date reservedDate = Calendar.getInstance().getTime(),
             tripDate = null, tripTime = null;
 
@@ -48,7 +55,7 @@ public class Reservation extends EasyAFModel {
         tripDate = (longs[1] > 0) ? new Date(longs[1]) : null;
         tripTime = (longs[2] > 0) ? new Date(longs[2]) : null;
 
-        String[] strings = new String[11];
+        String[] strings = new String[12];
         parcel.readStringArray(strings);
         mongoId = strings[0];
         origin = strings[1];
@@ -61,6 +68,9 @@ public class Reservation extends EasyAFModel {
         merchant = strings[8];
         vehicle = strings[9];
         transactionId = strings[10];
+        mobile = strings[11];
+
+        name = parcel.readParcelable(Name.class.getClassLoader());
     }
 
     public Reservation(JSONObject object) {
@@ -81,6 +91,10 @@ public class Reservation extends EasyAFModel {
             if (object.has("rd")) reservedDate = DateTimeConverter.toDateUtc(object.getString("rd"));
             if (object.has("td")) tripDate = DateTimeConverter.toDate(object.getString("td"));
             if (object.has("tt")) tripTime = DateTimeConverter.toDateUtc(object.getString("tt"));
+            if (object.has("n")) {
+                JSONObject nameObject = object.getJSONObject("n");
+                name = new Name(nameObject.getString("f"), nameObject.getString("l"));
+            }
 
             // if in server
             if (object.has("_id")) mongoId = object.getString("_id");
@@ -99,6 +113,7 @@ public class Reservation extends EasyAFModel {
             if (object.has("merchant")) merchant = object.getString("merchant");
             if (object.has("vehicle")) vehicle = object.getString("vehicle");
             if (object.has("transaction_id")) transactionId = object.getString("transaction_id");
+            if (object.has("name")) {  name = new Name(object.getJSONObject("name")); }
 
             if (object.has("reserved_date"))
                 reservedDate = DateTimeConverter.toDateUtc(object.getString("reserved_date"));
@@ -133,6 +148,8 @@ public class Reservation extends EasyAFModel {
             object.put("vehicle", vehicle);
             object.put("transaction_id", transactionId);
 
+            object.put("name", name.toJSON());
+
             object.put("reserved_date", DateTimeConverter.toISODateUtc(reservedDate));
             if (tripDate != null) object.put("trip_date", DateTimeConverter.toISODate(tripDate));
             if (tripTime != null) object.put("trip_time", DateTimeConverter.toISODateUtc(tripTime));
@@ -150,7 +167,8 @@ public class Reservation extends EasyAFModel {
                 (tripDate != null) ? tripDate.getTime() : 0,
                 (tripTime != null) ? tripTime.getTime() : 0 });
         parcel.writeStringArray(new String[] { mongoId, origin, destination, boarding,
-                dropping, referenceNo, trip, liner, merchant, vehicle, transactionId });
+                dropping, referenceNo, trip, liner, merchant, vehicle, transactionId, mobile });
+        parcel.writeParcelable(name, flags);
     }
 
     public int describeContents() { return 0; }
@@ -171,9 +189,11 @@ public class Reservation extends EasyAFModel {
     public String getMerchant() { return merchant; }
     public String getVehicle() { return vehicle; }
     public String getTransactionId() { return transactionId; }
+    public String getMobile() { return mobile; }
     public Date getReservedDate() { return reservedDate; }
     public Date getTripDate() { return tripDate; }
     public Date getTripTime() { return tripTime; }
+    public Name getName() { return name; }
     public void setPassengerType(int passengerType) { this.passengerType = passengerType; }
     public void setSeat(int seat) { this.seat = seat; }
     public void setStatus(int status) { this.status = status; }
@@ -190,9 +210,14 @@ public class Reservation extends EasyAFModel {
     public void setMerchant(String merchant) { this.merchant = merchant; }
     public void setVehicle(String vehicle) { this.vehicle = vehicle; }
     public void setTransactionId(String transactionId) { this.transactionId = transactionId; }
+    public void setMobile(String mobile) {
+        this.mobile = mobile;
+        notifyPropertyChanged(BR.mobile);
+    }
     public void setReservedDate(Date reservedDate) { this.reservedDate = reservedDate; }
     public void setTripDate(Date tripDate) { this.tripDate = tripDate; }
     public void setTripTime(Date tripTime) { this.tripTime = tripTime; }
+    public void setName(Name name) { this.name = name; }
 
     public String getSalt() {
         return seat + "-" + DateTimeConverter.toISODateUtc(reservedDate);
