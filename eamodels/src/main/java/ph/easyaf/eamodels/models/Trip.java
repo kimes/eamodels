@@ -27,7 +27,7 @@ public class Trip extends EasyAFModel {
 
     @Bindable
     private String mongoId = "", origin = "", destination = "", liner = "",
-            merchant = "", vehicle = "Bus";
+            merchant = "", vehicle = "Bus", code = "";
 
     @Bindable
     private Date date, time, startDate, expiresDate;
@@ -63,7 +63,7 @@ public class Trip extends EasyAFModel {
         startDate = (longs[2] > 0) ? new Date(longs[2]) : null;
         expiresDate = (longs[3] > 0) ? new Date(longs[3]) : null;
 
-        String[] strings = new String[6];
+        String[] strings = new String[7];
         parcel.readStringArray(strings);
         mongoId = strings[0];
         origin = strings[1];
@@ -71,6 +71,7 @@ public class Trip extends EasyAFModel {
         liner = strings[3];
         merchant = strings[4];
         vehicle = strings[5];
+        code = strings[6];
 
         ObservableArrayList<Route> boardingList = new ObservableArrayList<>();
         parcel.readTypedList(boardingList, Route.CREATOR);
@@ -114,6 +115,7 @@ public class Trip extends EasyAFModel {
             if (object.has("liner")) liner = object.getString("liner");
             if (object.has("merchant")) merchant = object.getString("merchant");
             if (object.has("vehicle")) vehicle = object.getString("vehicle");
+            if (object.has("code")) code = object.getString("code");
 
             if (object.has("date"))
                 date = DateTimeConverter.toDate(object.getString("date"));
@@ -169,6 +171,7 @@ public class Trip extends EasyAFModel {
 
         vehicle = trip.getVehicle();
         //notifyPropertyChanged(BR.vehicle);
+        code = trip.getCode();
 
         time = trip.getTime();
         startDate = trip.getStartDate();
@@ -196,6 +199,7 @@ public class Trip extends EasyAFModel {
         if (!liner.equals(trip.getLiner())) return false;
         if (!merchant.equals(trip.getMerchant())) return false;
         if (!vehicle.equals(trip.getVehicle())) return false;
+        if (!code.equals(trip.getCode())) return false;
 
         if (!mongoId.isEmpty()) {
             if (!mongoId.equals(trip.getMongoId())) return false;
@@ -227,7 +231,7 @@ public class Trip extends EasyAFModel {
                 (time != null) ? time.getTime() : 0,
                 (startDate != null) ? startDate.getTime() : 0,
                 (expiresDate != null) ? expiresDate.getTime() : 0 });
-        parcel.writeStringArray(new String[] { mongoId, origin, destination, liner, merchant, vehicle });
+        parcel.writeStringArray(new String[] { mongoId, origin, destination, liner, merchant, vehicle, code });
         parcel.writeTypedList(boardings);
         parcel.writeTypedList(dropOffs);
     }
@@ -244,6 +248,7 @@ public class Trip extends EasyAFModel {
             object.put("liner", liner);
             object.put("merchant", merchant);
             object.put("vehicle", vehicle);
+            object.put("code", code);
 
             if (time != null) object.put("time", DateTimeConverter.toISODateUtc(time));
             if (startDate != null) object.put("start_date", DateTimeConverter.toISODateUtc(startDate));
@@ -278,6 +283,7 @@ public class Trip extends EasyAFModel {
     public String getLiner() { return liner; }
     public String getMerchant() { return merchant; }
     public String getVehicle() { return vehicle; }
+    public String getCode() { return code; }
     public Date getDate() { return date; }
     public Date getTime() { return time; }
     public Date getStartDate() { return startDate; }
@@ -323,6 +329,10 @@ public class Trip extends EasyAFModel {
     public void setVehicle(String vehicle) {
         this.vehicle = vehicle;
         notifyPropertyChanged(BR.vehicle);
+    }
+    public void setCode(String code) {
+        this.code = code;
+        notifyPropertyChanged(BR.code);
     }
     public void setDate(Date date) {
         this.date = date;
