@@ -33,6 +33,9 @@ public class Trip extends EasyAFModel {
     private Date date, time, startDate, expiresDate;
 
     @Bindable
+    private ObservableArrayList<String> reservations = new ObservableArrayList<>();
+
+    @Bindable
     private ObservableArrayList<Route> boardings = new ObservableArrayList<>(),
         dropOffs = new ObservableArrayList<>();
 
@@ -73,6 +76,10 @@ public class Trip extends EasyAFModel {
         vehicle = strings[5];
         code = strings[6];
 
+        ObservableArrayList<String> reservationList = new ObservableArrayList<>();
+        parcel.readStringList(reservationList);
+        reservations = reservationList;
+
         ObservableArrayList<Route> boardingList = new ObservableArrayList<>();
         parcel.readTypedList(boardingList, Route.CREATOR);
         boardings = boardingList;
@@ -96,6 +103,9 @@ public class Trip extends EasyAFModel {
         vehicle = trip.getVehicle();
         selectedBoarding = trip.getSelectedBoarding();
 
+        for (int i = 0; i < trip.getReservations().size(); i++) {
+            reservations.add(trip.getReservations().get(i));
+        }
         for (int i = 0; i < trip.getBoardings().size(); i++) {
             boardings.add(new Route(trip.getBoardings().get(i)));
         }
@@ -125,6 +135,13 @@ public class Trip extends EasyAFModel {
                 startDate = DateTimeConverter.toDateUtc(object.getString("start_date"));
             if (object.has("expires_date"))
                 expiresDate = DateTimeConverter.toDateUtc(object.getString("expires_date"));
+
+            if (object.has("reservations")) {
+                JSONArray reservationsList = object.getJSONArray("reservations");
+                for (int i = 0; i < reservationsList.length(); i++) {
+                    reservations.add(reservationsList.getString(i));
+                }
+            }
 
             if (object.has("boardings")) {
                 JSONArray boardingsList = object.getJSONArray("boardings");
@@ -176,6 +193,11 @@ public class Trip extends EasyAFModel {
         time = trip.getTime();
         startDate = trip.getStartDate();
         expiresDate = trip.getExpiresDate();
+
+        reservations.clear();
+        for (int i = 0 ; i < trip.getReservations().size(); i++) {
+            reservations.add(trip.getReservations().get(i));
+        }
 
         boardings.clear();
         for (int i = 0; i < trip.getBoardings().size(); i++) {
@@ -232,6 +254,7 @@ public class Trip extends EasyAFModel {
                 (startDate != null) ? startDate.getTime() : 0,
                 (expiresDate != null) ? expiresDate.getTime() : 0 });
         parcel.writeStringArray(new String[] { mongoId, origin, destination, liner, merchant, vehicle, code });
+        parcel.writeStringList(reservations);
         parcel.writeTypedList(boardings);
         parcel.writeTypedList(dropOffs);
     }
@@ -288,6 +311,7 @@ public class Trip extends EasyAFModel {
     public Date getTime() { return time; }
     public Date getStartDate() { return startDate; }
     public Date getExpiresDate() { return expiresDate; }
+    public ObservableArrayList<String> getReservations() { return reservations; }
     public ObservableArrayList<Route> getBoardings() { return boardings; }
     public ObservableArrayList<Route> getDropOffs() { return dropOffs; }
 
@@ -349,6 +373,10 @@ public class Trip extends EasyAFModel {
     public void setExpiresDate(Date expiresDate) {
         this.expiresDate = expiresDate;
         notifyPropertyChanged(BR.expiresDate);
+    }
+    public void setReservations(ObservableArrayList<String> reservations) {
+        this.reservations = reservations;
+        notifyPropertyChanged(BR.reservations);
     }
     public void setBoardings(ObservableArrayList<Route> boardings) {
         this.boardings = boardings;
