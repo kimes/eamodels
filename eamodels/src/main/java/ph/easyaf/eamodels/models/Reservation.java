@@ -100,7 +100,7 @@ public class Reservation extends EasyAFModel {
             if (object.has("p")) reservedDate = DateTimeConverter.toDateUtc(object.getString("p"));
             if (object.has("t")) {
                 Date tDate = DateTimeConverter.toDate(object.getString("t"),
-                        "yyyy-MM-ddTHH:mm");
+                        "yyyy-MM-dd'T'HH:mm");
                 Calendar tCalendar = Calendar.getInstance();
                 tCalendar.setTime(tDate);
 
