@@ -97,7 +97,7 @@ public class Reservation extends EasyAFModel {
             if (object.has("n")) name = object.getString("n");
             if (object.has("m")) mobile = object.getString("m"); */
             if (object.has("r")) referenceNo = object.getString("r");
-            if (object.has("p")) reservedDate = DateTimeConverter.toDateUtc(object.getString("rd"));
+            if (object.has("p")) reservedDate = DateTimeConverter.toDateUtc(object.getString("p"));
             if (object.has("t")) {
                 Date tDate = DateTimeConverter.toDate(object.getString("t"),
                         "yyyy-MM-ddTHH:mm");
