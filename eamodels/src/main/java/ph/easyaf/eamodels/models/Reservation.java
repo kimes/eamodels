@@ -23,7 +23,8 @@ public class Reservation extends EasyAFModel {
     private double fare = 0, serviceFee = 0;
     private String mongoId = "", origin = "", destination = "",
             boarding = "", dropping = "", referenceNo = "", trip = "",
-            liner = "", merchant = "", vehicle = "", transactionId = "";
+            liner = "", merchant = "", vehicle = "", transactionId = "",
+            secret = "";
 
     @Bindable
     private String name = "", mobile = "";
@@ -57,7 +58,7 @@ public class Reservation extends EasyAFModel {
         tripDate = (longs[1] > 0) ? new Date(longs[1]) : null;
         tripTime = (longs[2] > 0) ? new Date(longs[2]) : null;
 
-        String[] strings = new String[13];
+        String[] strings = new String[14];
         parcel.readStringArray(strings);
         mongoId = strings[0];
         origin = strings[1];
@@ -72,10 +73,12 @@ public class Reservation extends EasyAFModel {
         transactionId = strings[10];
         name = strings[11];
         mobile = strings[12];
+        secret = strings[13];
     }
 
     public Reservation(BatchObject object) {
         try {
+            /*
             if (object.has("tid")) transactionId = object.getString("tid");
             if (object.has("o")) origin = object.getString("o");
             if (object.has("d")) destination = object.getString("d");
@@ -92,7 +95,38 @@ public class Reservation extends EasyAFModel {
             if (object.has("td")) tripDate = DateTimeConverter.toDate(object.getString("td"));
             if (object.has("tt")) tripTime = DateTimeConverter.toDateUtc(object.getString("tt"));
             if (object.has("n")) name = object.getString("n");
-            if (object.has("m")) mobile = object.getString("m");
+            if (object.has("m")) mobile = object.getString("m"); */
+            if (object.has("r")) referenceNo = object.getString("r");
+            if (object.has("p")) reservedDate = DateTimeConverter.toDateUtc(object.getString("rd"));
+            if (object.has("t")) {
+                Date tDate = DateTimeConverter.toDate(object.getString("t"),
+                        "yyyy-MM-ddTHH:mm");
+                Calendar tCalendar = Calendar.getInstance();
+                tCalendar.setTime(tDate);
+
+                Calendar tDateCalendar = Calendar.getInstance(),
+                        tTimeCalendar = Calendar.getInstance();
+
+                tDateCalendar.set(tCalendar.get(Calendar.YEAR),
+                        tCalendar.get(Calendar.MONTH),
+                        tCalendar.get(Calendar.DATE), 0, 0, 0);
+                tDateCalendar.set(Calendar.MILLISECOND, 0);
+
+                tTimeCalendar.set(2021, 0, 1,
+                        tCalendar.get(Calendar.HOUR_OF_DAY),
+                        tCalendar.get(Calendar.MINUTE),
+                        tCalendar.get(Calendar.SECOND));
+                tTimeCalendar.set(Calendar.MILLISECOND, 0);
+
+                tripDate = tDateCalendar.getTime();
+                tripTime = tTimeCalendar.getTime();
+            }
+            if (object.has("d")) destination = object.getString("d");
+            if (object.has("l")) liner = object.getString("l");
+            if (object.has("s")) seat = object.getInt("s");
+            if (object.has("f")) fare = object.getDouble("f");
+            if (object.has("y")) passengerType = object.getInt("y");
+            if (object.has("k")) secret = object.getString("k");
         } catch (BatchObjectException e) {
             e.printStackTrace();
         }
@@ -192,7 +226,8 @@ public class Reservation extends EasyAFModel {
                 (tripDate != null) ? tripDate.getTime() : 0,
                 (tripTime != null) ? tripTime.getTime() : 0 });
         parcel.writeStringArray(new String[] { mongoId, origin, destination, boarding,
-                dropping, referenceNo, trip, liner, merchant, vehicle, transactionId, name, mobile });
+                dropping, referenceNo, trip, liner, merchant, vehicle, transactionId, name,
+                mobile, secret });
     }
 
     public int describeContents() { return 0; }
@@ -215,6 +250,7 @@ public class Reservation extends EasyAFModel {
     public String getTransactionId() { return transactionId; }
     public String getMobile() { return mobile; }
     public String getName() { return name; }
+    public String getSecret() { return secret; }
     public Date getReservedDate() { return reservedDate; }
     public Date getTripDate() { return tripDate; }
     public Date getTripTime() { return tripTime; }
@@ -242,6 +278,7 @@ public class Reservation extends EasyAFModel {
         this.name = name;
         notifyPropertyChanged(BR.name);
     }
+    public void setSecret(String secret) { this.secret = secret; }
     public void setReservedDate(Date reservedDate) { this.reservedDate = reservedDate; }
     public void setTripDate(Date tripDate) { this.tripDate = tripDate; }
     public void setTripTime(Date tripTime) { this.tripTime = tripTime; }
@@ -249,8 +286,16 @@ public class Reservation extends EasyAFModel {
     public String getSalt() {
         return seat + "-" + DateTimeConverter.toISODateUtc(reservedDate);
     }
+    public String getSecretSalt() {
+        String refLast = referenceNo.substring(referenceNo.length() - 3);
+        String tDateText = DateTimeConverter.toDateText(tripDate, "yyyy-MM-dd"),
+                tTimeText = DateTimeConverter.toDateText(tripTime, "HH:mm");
+        String fareText = String.format("%.2f", fare);
 
-    public static final Parcelable.Creator<Reservation> CREATOR = new Parcelable.Creator<Reservation>() {
+        return refLast + (tDateText + "T" + tTimeText) + destination + fareText + passengerType;
+    }
+
+    public static final Parcelable.Creator<Reservation> CREATOR = new Parcelable.Creator<>() {
         public Reservation createFromParcel(Parcel parcel) { return new Reservation(parcel); }
         public Reservation[] newArray(int size) { return new Reservation[size]; }
     };
