@@ -292,7 +292,7 @@ public class Reservation extends EasyAFModel {
                 tTimeText = DateTimeConverter.toDateText(tripTime, "HH:mm");
         String fareText = String.format("%.2f", fare);
 
-        return refLast + (tDateText + "T" + tTimeText) + destination + fareText + passengerType;
+        return refLast + (tDateText + "T" + tTimeText) + destination + liner + fareText + passengerType;
     }
 
     public static final Parcelable.Creator<Reservation> CREATOR = new Parcelable.Creator<>() {
