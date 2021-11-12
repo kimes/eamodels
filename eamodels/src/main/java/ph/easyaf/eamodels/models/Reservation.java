@@ -292,6 +292,7 @@ public class Reservation extends EasyAFModel {
                 tTimeText = DateTimeConverter.toDateText(tripTime, "HH:mm");
         String fareText = String.format("%.2f", fare);
 
+        System.out.println("Trying to update this, because android studio cant find it. v1.29");
         return refLast + (tDateText + "T" + tTimeText) + destination + liner + fareText + passengerType;
     }
 
