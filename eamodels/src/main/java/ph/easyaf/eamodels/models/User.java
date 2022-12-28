@@ -20,7 +20,7 @@ public class User extends BaseObservable implements Parcelable {
     private int role = 0, position = 0;
 
     @Bindable
-    private String email = "", password = "", code = "", merchant = "";
+    private String mongoId = "", email = "", password = "", code = "", merchant = "";
 
     @Bindable
     private Name name = new Name();
@@ -32,6 +32,8 @@ public class User extends BaseObservable implements Parcelable {
 
     public User(JSONObject object) {
         try {
+            if (object.has("_id")) mongoId = object.getString("_id");
+
             if (object.has("role")) role = object.getInt("role");
             if (object.has("position")) position = object.getInt("position");
 
@@ -60,12 +62,13 @@ public class User extends BaseObservable implements Parcelable {
         role = ints[0];
         position = ints[1];
 
-        String[] strings = new String[4];
+        String[] strings = new String[5];
         parcel.readStringArray(strings);
-        email = strings[0];
-        password = strings[1];
-        code = strings[2];
-        merchant = strings[3];
+        mongoId = strings[0];
+        email = strings[1];
+        password = strings[2];
+        code = strings[3];
+        merchant = strings[4];
 
         name = parcel.readParcelable(Name.class.getClassLoader());
 
@@ -75,8 +78,11 @@ public class User extends BaseObservable implements Parcelable {
     public JSONObject toJSON() {
         JSONObject object = new JSONObject();
         try {
+            object.put("_id", mongoId);
+
             object.put("role", role);
             object.put("position", position);
+
             object.put("email", email);
             object.put("password", password);
             object.put("code", code);
@@ -97,7 +103,7 @@ public class User extends BaseObservable implements Parcelable {
 
     public void writeToParcel(Parcel parcel, int flags) {
         parcel.writeIntArray(new int[] { role, position });
-        parcel.writeStringArray(new String[] { email, password, code, merchant });
+        parcel.writeStringArray(new String[] { mongoId, email, password, code, merchant });
 
         parcel.writeParcelable(name, flags);
         parcel.writeStringList(permissions);
@@ -107,6 +113,7 @@ public class User extends BaseObservable implements Parcelable {
 
     public int getRole() { return role; }
     public int getPosition() { return position; }
+    public String getMongoId() { return mongoId; }
     public String getEmail() { return email; }
     public String getPassword() { return password; }
     public String getCode() { return code; }
@@ -121,6 +128,10 @@ public class User extends BaseObservable implements Parcelable {
     public void setPosition(int position) {
         this.position = position;
         notifyPropertyChanged(BR.position);
+    }
+    public void setMongoId(String mongoId) {
+        this.mongoId = mongoId;
+        notifyPropertyChanged(BR.mongoId);
     }
     public void setEmail(String email) {
         this.email = email;
