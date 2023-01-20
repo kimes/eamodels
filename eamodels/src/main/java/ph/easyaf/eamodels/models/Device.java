@@ -24,6 +24,11 @@ public class Device extends BaseObservable implements Parcelable {
     private String mongoId = "", name = "", plateNumber = "", secretKey = "",
             gate = "", merchant = "", socketId = "";
 
+    @Bindable
+    private Dispatch dispatch = new Dispatch();
+
+    public Device() {}
+
     public Device(Parcel parcel) {
         boolean[] booleans = new boolean[1];
         parcel.readBooleanArray(booleans);
@@ -42,6 +47,8 @@ public class Device extends BaseObservable implements Parcelable {
         gate = strings[4];
         merchant = strings[5];
         socketId = strings[6];
+
+        dispatch = parcel.readParcelable(Dispatch.class.getClassLoader());
     }
 
     public Device(JSONObject object) {
@@ -55,6 +62,12 @@ public class Device extends BaseObservable implements Parcelable {
             if (object.has("gate")) gate = object.getString("gate");
             if (object.has("merchant")) merchant = object.getString("merchant");
             if (object.has("socket_id")) socketId = object.getString("socket_id");
+
+            if (object.has("dispatch")) {
+                if (!object.isNull("dispatch")) {
+                    dispatch = new Dispatch(object.getJSONObject("dispatch"));
+                }
+            }
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -65,6 +78,7 @@ public class Device extends BaseObservable implements Parcelable {
         parcel.writeIntArray(new int[] { status });
         parcel.writeStringArray(new String[] { mongoId, name, plateNumber, secretKey,
                 gate, merchant, socketId });
+        parcel.writeParcelable(dispatch, flags);
     }
 
     public JSONObject toJSON() {
@@ -96,6 +110,7 @@ public class Device extends BaseObservable implements Parcelable {
     public String getGate() { return gate; }
     public String getMerchant() { return merchant; }
     public String getSocketId() { return socketId; }
+    public Dispatch getDispatch() { return dispatch; }
 
     public void setOnline(boolean online) {
         this.online = online;
@@ -140,6 +155,11 @@ public class Device extends BaseObservable implements Parcelable {
     public void setSocketId(String socketId) {
         this.socketId = socketId;
         notifyPropertyChanged(BR.socketId);
+    }
+
+    public void setDispatch(Dispatch dispatch) {
+        this.dispatch = dispatch;
+        notifyPropertyChanged(BR.dispatch);
     }
 
     public static final Creator<Device> CREATOR = new Creator<Device>() {
