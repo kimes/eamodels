@@ -79,11 +79,11 @@ public class Dispatch extends BaseObservable implements Parcelable {
         dispatchStartDate = (dates[1] > 0) ? new Date(dates[1]) : null;
         dispatchEndDate = (dates[2] > 0) ? new Date(dates[2]) : null;
 
-        User[] users = (User[])parcel.readParcelableArray(User.class.getClassLoader());
-        dispatcherStart = users[0];
-        dispatcherEnd = users[1];
-        driver = users[2];
-        conductor = users[3];
+        Parcelable[] users = parcel.readParcelableArray(User.class.getClassLoader());
+        dispatcherStart = (User)users[0];
+        dispatcherEnd = (User)users[1];
+        driver = (User)users[2];
+        conductor = (User)users[3];
 
         trip = parcel.readParcelable(Trip.class.getClassLoader());
     }
