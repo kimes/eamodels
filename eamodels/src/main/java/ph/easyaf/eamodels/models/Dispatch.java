@@ -18,7 +18,7 @@ import ph.easyaf.eamodels.utils.DateTimeConverter;
 public class Dispatch extends BaseObservable implements Parcelable {
 
     @Bindable
-    private int status = 0;
+    private int status = -1;
 
     @Bindable
     private String mongoId = "", deviceName = "";
