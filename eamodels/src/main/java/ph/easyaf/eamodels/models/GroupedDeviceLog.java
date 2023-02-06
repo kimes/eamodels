@@ -4,6 +4,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import androidx.databinding.BaseObservable;
+import androidx.databinding.Bindable;
 import androidx.databinding.library.baseAdapters.BR;
 
 import org.json.JSONArray;
@@ -14,7 +15,10 @@ import java.util.ArrayList;
 
 public class GroupedDeviceLog extends BaseObservable implements Parcelable {
 
+    @Bindable
     private String id = "";
+
+    @Bindable
     private ArrayList<DeviceLog> deviceLogs = new ArrayList<>();
 
     public GroupedDeviceLog() {}
