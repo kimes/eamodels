@@ -91,7 +91,6 @@ public class Inspect extends BaseObservable implements Parcelable {
 
     public static final Parcelable.Creator<Inspect> CREATOR = new Parcelable.Creator<Inspect>() {
         public Inspect createFromParcel(Parcel parcel) { return new Inspect(parcel); }
-
         public Inspect[] newArray(int size) { return new Inspect[size]; }
     };
 }
