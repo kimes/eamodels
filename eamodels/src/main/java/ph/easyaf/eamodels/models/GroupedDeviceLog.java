@@ -12,11 +12,15 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+
+import ph.easyaf.eamodels.utils.DateTimeConverter;
 
 public class GroupedDeviceLog extends BaseObservable implements Parcelable {
 
     @Bindable
-    private String id = "";
+    private Date date = Calendar.getInstance().getTime();
 
     @Bindable
     private ArrayList<DeviceLog> deviceLogs = new ArrayList<>();
@@ -25,7 +29,9 @@ public class GroupedDeviceLog extends BaseObservable implements Parcelable {
 
     public GroupedDeviceLog(JSONObject object) {
         try {
-            if (object.has("_id")) id = object.getString("_id");
+            if (object.has("_id")) {
+                date = DateTimeConverter.toDate(object.getString("_id"), "yyyy-MM-dd");
+            }
             if (object.has("logs")) {
                 JSONArray logsArray = object.getJSONArray("logs");
                 for (int i = 0; i < logsArray.length(); i++) {
@@ -38,7 +44,8 @@ public class GroupedDeviceLog extends BaseObservable implements Parcelable {
     }
 
     public GroupedDeviceLog(Parcel parcel) {
-        id = parcel.readString();
+        long dateLong = parcel.readLong();
+        date = new Date(dateLong);
 
         ArrayList<DeviceLog> logsList = new ArrayList<>();
         parcel.readTypedList(logsList, DeviceLog.CREATOR);
@@ -46,17 +53,17 @@ public class GroupedDeviceLog extends BaseObservable implements Parcelable {
     }
 
     public void writeToParcel(Parcel parcel, int flags) {
-        parcel.writeString(id);
+        parcel.writeLong(date.getTime());
         parcel.writeTypedList(deviceLogs);
     }
 
     public int describeContents() { return 0; }
 
-    public String getId() { return id; }
+    public Date getDate() { return date; }
     public ArrayList<DeviceLog> getDeviceLogs() { return deviceLogs; }
-    public void setId(String id) {
-        this.id = id;
-        notifyPropertyChanged(BR.id);
+    public void setDate(Date date) {
+        this.date = date;
+        notifyPropertyChanged(BR.date);
     }
     public void setDeviceLogs(ArrayList<DeviceLog> deviceLogs) {
         this.deviceLogs = deviceLogs;
