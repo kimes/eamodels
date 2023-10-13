@@ -93,6 +93,8 @@ public class Device extends BaseObservable implements Parcelable {
             object.put("gate", gate);
             object.put("merchant", merchant);
             object.put("socket_id", socketId);
+
+            if (dispatch != null) object.put("dispatch", dispatch.toJSON());
         } catch (JSONException e) {
             e.printStackTrace();
         }
