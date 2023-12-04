@@ -20,7 +20,7 @@ public class Trip extends EasyAFModel {
     private boolean enabled = true;
 
     @Bindable
-    private int maxSeats = 0, reservationCount = 0;
+    private int maxSeats = 0, reservationCount = 0, selectedBoardingIndex = 0;
 
     @Bindable
     private double fare;
@@ -299,6 +299,7 @@ public class Trip extends EasyAFModel {
     public boolean isEnabled() { return enabled; }
     public int getMaxSeats() { return maxSeats; }
     public int getReservationCount() { return reservationCount; }
+    public int getSelectedBoardingIndex() { return selectedBoardingIndex; }
     public double getFare() { return fare; }
     public String getMongoId() { return mongoId; }
     public String getOrigin() { return origin; }
@@ -326,6 +327,10 @@ public class Trip extends EasyAFModel {
     public void setReservationCount(int reservationCount) {
         this.reservationCount = reservationCount;
         notifyPropertyChanged(BR.reservationCount);
+    }
+    public void setSelectedBoardingIndex(int selectedBoardingIndex) {
+        this.selectedBoardingIndex = selectedBoardingIndex;
+        notifyPropertyChanged(BR.selectedBoardingIndex);
     }
     public void setFare(double fare) {
         this.fare = fare;
