@@ -236,6 +236,7 @@ public class Reservation extends EasyAFModel {
     public int getSeat() { return seat; }
     public int getStatus() { return status; }
     public double getFare() { return fare; }
+    @Deprecated
     public double getServiceFee() { return serviceFee; }
     public String getMongoId() { return mongoId; }
     public String getOrigin() { return origin; }
@@ -258,6 +259,7 @@ public class Reservation extends EasyAFModel {
     public void setSeat(int seat) { this.seat = seat; }
     public void setStatus(int status) { this.status = status; }
     public void setFare(double fare) { this.fare = fare; }
+    @Deprecated
     public void setServiceFee(double serviceFee) { this.serviceFee = serviceFee; }
     public void setMongoId(String mongoId) { this.mongoId = mongoId; }
     public void setOrigin(String origin) { this.origin = origin; }

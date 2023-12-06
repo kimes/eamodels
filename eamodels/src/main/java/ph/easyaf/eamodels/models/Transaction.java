@@ -3,6 +3,9 @@ package ph.easyaf.eamodels.models;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import androidx.databinding.Bindable;
+import androidx.databinding.library.baseAdapters.BR;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -16,7 +19,12 @@ import ph.easyaf.eamodels.utils.DateTimeConverter;
 
 public class Transaction extends EasyAFModel {
 
+    @Bindable
     private int status;
+
+    @Bindable
+    private double totalFare = 0, serviceFee = 0;
+
     private String mongoId = "", boarding, dropping, reservedBy,
             referenceNo, paymentType, paymentRemarks, remarks, liner = "", merchant = "",
             tripCode = "";
@@ -30,6 +38,8 @@ public class Transaction extends EasyAFModel {
         try {
             if (object.has("_id")) mongoId = object.getString("_id");
             if (object.has("status")) status = object.getInt("status");
+            if (object.has("total_fare")) totalFare = object.getDouble("total_fare");
+            if (object.has("service_fee")) serviceFee = object.getDouble("service_fee");
             if (object.has("reserved_by")) reservedBy = object.getString("reserved_by");
             if (object.has("reference_number")) referenceNo = object.getString("reference_number");
             if (object.has("payment_type")) paymentType = object.getString("payment_type");
@@ -58,6 +68,11 @@ public class Transaction extends EasyAFModel {
         parcel.readIntArray(ints);
         status = ints[0];
 
+        double[] doubles = new double[2];
+        parcel.readDoubleArray(doubles);
+        totalFare = doubles[0];
+        serviceFee = doubles[1];
+
         long[] longs = new long[1];
         parcel.readLongArray(longs);
         reservedDate = new Date(longs[0]);
@@ -81,6 +96,7 @@ public class Transaction extends EasyAFModel {
 
     public void writeToParcel(Parcel parcel, int flags) {
         parcel.writeIntArray(new int[] { status });
+        parcel.writeDoubleArray(new double[] { totalFare, serviceFee });
         parcel.writeLongArray(new long[] { reservedDate.getTime() });
         parcel.writeStringArray(new String[] { mongoId, reservedBy, referenceNo,
             paymentType, paymentRemarks, remarks, liner, merchant, tripCode });
@@ -92,6 +108,8 @@ public class Transaction extends EasyAFModel {
         try {
             if (!mongoId.isEmpty()) object.put("_id", mongoId);
             object.put("status", status);
+            object.put("total_fare", totalFare);
+            object.put("service_fee", serviceFee);
             object.put("reserved_by", reservedBy);
             object.put("reference_number", referenceNo);
             object.put("payment_type", paymentType);
@@ -117,6 +135,8 @@ public class Transaction extends EasyAFModel {
     public int describeContents() { return 0; }
 
     public int getStatus() { return status; }
+    public double getTotalFare() { return totalFare; }
+    public double getServiceFee() { return serviceFee; }
     public String getMongoId() { return mongoId; }
     public String getBoarding() { return boarding; }
     public String getDropping() { return dropping; }
@@ -131,7 +151,18 @@ public class Transaction extends EasyAFModel {
     public Trip getTrip() { return trip; }
     public Date getReservedDate() { return reservedDate; }
     public ArrayList<Reservation> getReservations() { return reservations; }
-    public void setStatus(int status) { this.status = status; }
+    public void setStatus(int status) {
+        this.status = status;
+        notifyPropertyChanged(BR.status);
+    }
+    public void setTotalFare(double totalFare) {
+        this.totalFare = totalFare;
+        notifyPropertyChanged(BR.totalFare);
+    }
+    public void setServiceFee(double serviceFee) {
+        this.serviceFee = serviceFee;
+        notifyPropertyChanged(BR.serviceFee);
+    }
     public void setMongoId(String mongoId) { this.mongoId = mongoId; }
     public void setBoarding(String boarding) { this.boarding = boarding; }
     public void setDropping(String dropping) { this.dropping = dropping; }
@@ -149,14 +180,6 @@ public class Transaction extends EasyAFModel {
 
     public String getTransactionNo() {
         return String.format(Locale.getDefault(), "%s-%08d", reservedBy, id);
-    }
-
-    public double getTotalFare() {
-        double totalFare = 0d;
-        for (int i = 0; i < reservations.size(); i++) {
-            totalFare += reservations.get(i).getFare();
-        }
-        return totalFare;
     }
 
     public double getOriginalFare() {
@@ -180,14 +203,6 @@ public class Transaction extends EasyAFModel {
             }
         }
         return discountedFare;
-    }
-
-    public double getServiceFee() {
-        double serviceFee = 0d;
-        for (int i = 0; i < reservations.size(); i++) {
-            serviceFee += reservations.get(i).getServiceFee();
-        }
-        return serviceFee;
     }
 
     public boolean isDiscounted() {
