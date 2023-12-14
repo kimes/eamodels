@@ -51,11 +51,12 @@ public class Trip extends EasyAFModel {
         parcel.readBooleanArray(booleans);
         enabled = booleans[0];
 
-        int[] ints = new int[3];
+        int[] ints = new int[4];
         parcel.readIntArray(ints);
         id = ints[0];
         maxSeats = ints[1];
         reservationCount = ints[2];
+        selectedBoardingIndex = ints[3];
 
         double[] doubles = new double[2];
         parcel.readDoubleArray(doubles);
@@ -97,6 +98,7 @@ public class Trip extends EasyAFModel {
         enabled = trip.isEnabled();
         maxSeats = trip.getMaxSeats();
         reservationCount = trip.getReservationCount();
+        selectedBoardingIndex = trip.getSelectedBoardingIndex();
         fare = trip.getFare();
         minFare = trip.getMinFare();
         mongoId = trip.getMongoId();
@@ -177,6 +179,8 @@ public class Trip extends EasyAFModel {
 
         reservationCount = trip.getReservationCount();
 
+        selectedBoardingIndex = trip.getSelectedBoardingIndex();
+
         fare = trip.getFare();
         //notifyPropertyChanged(BR.fare);
 
@@ -254,7 +258,7 @@ public class Trip extends EasyAFModel {
 
     public void writeToParcel(Parcel parcel, int flags) {
         parcel.writeBooleanArray(new boolean[] { enabled });
-        parcel.writeIntArray(new int[] { id, maxSeats, reservationCount });
+        parcel.writeIntArray(new int[] { id, maxSeats, reservationCount, selectedBoardingIndex });
         parcel.writeDoubleArray(new double[] { fare, minFare });
         parcel.writeLongArray(new long[] {
                 (date != null) ? date.getTime() : 0,
