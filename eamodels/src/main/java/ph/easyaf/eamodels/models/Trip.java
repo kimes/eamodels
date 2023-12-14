@@ -350,7 +350,7 @@ public class Trip extends EasyAFModel {
         this.fare = fare;
         notifyPropertyChanged(BR.fare);
     }
-    public void setMinFare(double fare) {
+    public void setMinFare(double minFare) {
         this.minFare = minFare;
         notifyPropertyChanged(BR.minFare);
     }
