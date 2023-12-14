@@ -23,7 +23,7 @@ public class Trip extends EasyAFModel {
     private int maxSeats = 0, reservationCount = 0, selectedBoardingIndex = 0;
 
     @Bindable
-    private double fare;
+    private double fare = 0, minFare = 0;
 
     @Bindable
     private String mongoId = "", origin = "", destination = "", liner = "",
@@ -57,7 +57,10 @@ public class Trip extends EasyAFModel {
         maxSeats = ints[1];
         reservationCount = ints[2];
 
-        fare = parcel.readDouble();
+        double[] doubles = new double[2];
+        parcel.readDoubleArray(doubles);
+        fare = doubles[0];
+        minFare = doubles[1];
 
         long[] longs = new long[4];
         parcel.readLongArray(longs);
@@ -95,6 +98,7 @@ public class Trip extends EasyAFModel {
         maxSeats = trip.getMaxSeats();
         reservationCount = trip.getReservationCount();
         fare = trip.getFare();
+        minFare = trip.getMinFare();
         mongoId = trip.getMongoId();
         origin = trip.getOrigin();
         destination = trip.getDestination();
@@ -120,6 +124,7 @@ public class Trip extends EasyAFModel {
             if (object.has("max_seats")) maxSeats = object.getInt("max_seats");
             if (object.has("reservation_count")) reservationCount = object.getInt("reservation_count");
             if (object.has("fare")) fare = object.getDouble("fare");
+            if (object.has("min_fare")) minFare = object.getDouble("min_fare");
             if (object.has("origin")) origin = object.getString("origin");
             if (object.has("destination")) destination = object.getString("destination");
             if (object.has("liner")) liner = object.getString("liner");
@@ -175,6 +180,8 @@ public class Trip extends EasyAFModel {
         fare = trip.getFare();
         //notifyPropertyChanged(BR.fare);
 
+        minFare = trip.getMinFare();
+
         mongoId = trip.getMongoId();
 
         origin = trip.getOrigin();
@@ -216,6 +223,7 @@ public class Trip extends EasyAFModel {
         if (id != trip.getId()) return false;
         if (enabled != trip.isEnabled()) return false;
         if (fare != trip.getFare()) return false;
+        if (minFare != trip.getMinFare()) return false;
         if (!origin.equals(trip.getOrigin())) return false;
         if (!destination.equals(trip.getDestination())) return false;
         if (!liner.equals(trip.getLiner())) return false;
@@ -247,7 +255,7 @@ public class Trip extends EasyAFModel {
     public void writeToParcel(Parcel parcel, int flags) {
         parcel.writeBooleanArray(new boolean[] { enabled });
         parcel.writeIntArray(new int[] { id, maxSeats, reservationCount });
-        parcel.writeDouble(fare);
+        parcel.writeDoubleArray(new double[] { fare, minFare });
         parcel.writeLongArray(new long[] {
                 (date != null) ? date.getTime() : 0,
                 (time != null) ? time.getTime() : 0,
@@ -265,6 +273,7 @@ public class Trip extends EasyAFModel {
             if (!mongoId.isEmpty()) object.put("_id", mongoId);
             object.put("max_seats", maxSeats);
             object.put("fare", fare);
+            object.put("min_fare", minFare);
 
             object.put("origin", origin);
             object.put("destination", destination);
@@ -301,6 +310,7 @@ public class Trip extends EasyAFModel {
     public int getReservationCount() { return reservationCount; }
     public int getSelectedBoardingIndex() { return selectedBoardingIndex; }
     public double getFare() { return fare; }
+    public double getMinFare() { return minFare; }
     public String getMongoId() { return mongoId; }
     public String getOrigin() { return origin; }
     public String getDestination() { return destination; }
@@ -335,6 +345,10 @@ public class Trip extends EasyAFModel {
     public void setFare(double fare) {
         this.fare = fare;
         notifyPropertyChanged(BR.fare);
+    }
+    public void setMinFare(double fare) {
+        this.minFare = minFare;
+        notifyPropertyChanged(BR.minFare);
     }
     public void setMongoId(String mongoId) {
         this.mongoId = mongoId;
