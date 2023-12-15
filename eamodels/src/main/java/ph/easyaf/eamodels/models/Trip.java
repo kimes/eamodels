@@ -4,6 +4,7 @@ import android.os.Parcel;
 
 import androidx.databinding.Bindable;
 import androidx.databinding.ObservableArrayList;
+import androidx.databinding.library.baseAdapters.BR;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -11,7 +12,6 @@ import org.json.JSONObject;
 
 import java.util.Date;
 
-import ph.easyaf.eamodels.BR;
 import ph.easyaf.eamodels.utils.DateTimeConverter;
 
 public class Trip extends EasyAFModel {

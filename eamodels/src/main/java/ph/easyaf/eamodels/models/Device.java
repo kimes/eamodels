@@ -3,14 +3,12 @@ package ph.easyaf.eamodels.models;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import androidx.annotation.NonNull;
 import androidx.databinding.BaseObservable;
 import androidx.databinding.Bindable;
+import androidx.databinding.library.baseAdapters.BR;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import ph.easyaf.eamodels.BR;
 
 public class Device extends BaseObservable implements Parcelable {
 

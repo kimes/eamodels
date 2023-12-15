@@ -3,11 +3,10 @@ package ph.easyaf.eamodels.models;
 import android.os.Parcel;
 
 import androidx.databinding.Bindable;
+import androidx.databinding.library.baseAdapters.BR;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import ph.easyaf.eamodels.BR;
 
 public class Route extends EasyAFModel {
 
