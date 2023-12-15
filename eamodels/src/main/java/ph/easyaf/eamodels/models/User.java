@@ -20,6 +20,9 @@ public class User extends BaseObservable implements Parcelable {
     private int role = 0, position = 0;
 
     @Bindable
+    private double totalTransactionsAmount = 0, totalTransactionsService = 0;
+
+    @Bindable
     private String mongoId = "", email = "", password = "", code = "", merchant = "";
 
     @Bindable
@@ -44,6 +47,12 @@ public class User extends BaseObservable implements Parcelable {
 
             if (object.has("name")) name = new Name(object.getJSONObject("name"));
 
+            if (object.has("total_transactions_amount"))
+                totalTransactionsAmount = object.getDouble("total_transactions_amount");
+
+            if (object.has("total_transactions_service"))
+                totalTransactionsService = object.getDouble("total_transactions_service");
+
             if (object.has("permissions")) {
                 JSONArray perm = object.getJSONArray("permissions");
 
@@ -61,6 +70,11 @@ public class User extends BaseObservable implements Parcelable {
         parcel.readIntArray(ints);
         role = ints[0];
         position = ints[1];
+
+        double[] doubles = new double[2];
+        parcel.readDoubleArray(doubles);
+        totalTransactionsAmount = doubles[0];
+        totalTransactionsService = doubles[1];
 
         String[] strings = new String[5];
         parcel.readStringArray(strings);
@@ -103,6 +117,7 @@ public class User extends BaseObservable implements Parcelable {
 
     public void writeToParcel(Parcel parcel, int flags) {
         parcel.writeIntArray(new int[] { role, position });
+        parcel.writeDoubleArray(new double[] { totalTransactionsAmount, totalTransactionsService });
         parcel.writeStringArray(new String[] { mongoId, email, password, code, merchant });
 
         parcel.writeParcelable(name, flags);
@@ -113,6 +128,8 @@ public class User extends BaseObservable implements Parcelable {
 
     public int getRole() { return role; }
     public int getPosition() { return position; }
+    public double getTotalTransactionsAmount() { return totalTransactionsAmount; }
+    public double getTotalTransactionsService() { return totalTransactionsService; }
     public String getMongoId() { return mongoId; }
     public String getEmail() { return email; }
     public String getPassword() { return password; }
@@ -129,6 +146,17 @@ public class User extends BaseObservable implements Parcelable {
         this.position = position;
         notifyPropertyChanged(BR.position);
     }
+
+    public void setTotalTransactionsAmount(double totalTransactionsAmount) {
+        this.totalTransactionsAmount = totalTransactionsAmount;
+        notifyPropertyChanged(BR.totalTransactionsAmount);
+    }
+
+    public void setTotalTransactionsService(double totalTransactionsService) {
+        this.totalTransactionsService = totalTransactionsService;
+        notifyPropertyChanged(BR.totalTransactionsService);
+    }
+
     public void setMongoId(String mongoId) {
         this.mongoId = mongoId;
         notifyPropertyChanged(BR.mongoId);
