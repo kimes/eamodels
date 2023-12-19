@@ -27,7 +27,7 @@ public class Transaction extends EasyAFModel {
 
     private String mongoId = "", boarding, dropping, reservedBy,
             referenceNo, paymentType, paymentRemarks, remarks, liner = "", merchant = "",
-            tripCode = "";
+            tripCode = "", driverCode = "", busNumber = "";
     private Date reservedDate = Calendar.getInstance().getTime();
     private Trip trip = new Trip();
     private ArrayList<Reservation> reservations = new ArrayList<>();
@@ -48,6 +48,8 @@ public class Transaction extends EasyAFModel {
             if (object.has("liner")) liner = object.getString("liner");
             if (object.has("merchant")) merchant = object.getString("merchant");
             if (object.has("trip_code")) tripCode = object.getString("trip_code");
+            if (object.has("driver_code")) driverCode = object.getString("driver_code");
+            if (object.has("bus_number")) busNumber = object.getString("bus_number");
 
             if (object.has("reserved_date"))
                 reservedDate = DateTimeConverter.toDateUtc(object.getString("reserved_date"));
@@ -77,7 +79,7 @@ public class Transaction extends EasyAFModel {
         parcel.readLongArray(longs);
         reservedDate = new Date(longs[0]);
 
-        String[] strings = new String[9];
+        String[] strings = new String[11];
         parcel.readStringArray(strings);
         mongoId = strings[0];
         reservedBy = strings[1];
@@ -88,6 +90,8 @@ public class Transaction extends EasyAFModel {
         liner = strings[6];
         merchant = strings[7];
         tripCode = strings[8];
+        driverCode = strings[9];
+        busNumber = strings[10];
 
         ArrayList<Reservation> reservationList = new ArrayList<>();
         parcel.readTypedList(reservationList, Reservation.CREATOR);
@@ -99,7 +103,7 @@ public class Transaction extends EasyAFModel {
         parcel.writeDoubleArray(new double[] { totalFare, serviceFee });
         parcel.writeLongArray(new long[] { reservedDate.getTime() });
         parcel.writeStringArray(new String[] { mongoId, reservedBy, referenceNo,
-            paymentType, paymentRemarks, remarks, liner, merchant, tripCode });
+            paymentType, paymentRemarks, remarks, liner, merchant, tripCode, driverCode, busNumber });
         parcel.writeTypedList(reservations);
     }
 
@@ -118,6 +122,8 @@ public class Transaction extends EasyAFModel {
             object.put("liner", liner);
             object.put("merchant", merchant);
             object.put("trip_code", tripCode);
+            object.put("driver_code", driverCode);
+            object.put("bus_number", busNumber);
             object.put("reserved_date", DateTimeConverter.toISODateUtc(reservedDate));
             object.put("transaction_number", getTransactionNo());
 
@@ -148,6 +154,8 @@ public class Transaction extends EasyAFModel {
     public String getLiner() { return liner; }
     public String getMerchant() { return merchant; }
     public String getTripCode() { return tripCode; }
+    public String getDriverCode() { return driverCode; }
+    public String getBusNumber() { return busNumber; }
     public Trip getTrip() { return trip; }
     public Date getReservedDate() { return reservedDate; }
     public ArrayList<Reservation> getReservations() { return reservations; }
@@ -174,6 +182,8 @@ public class Transaction extends EasyAFModel {
     public void setLiner(String liner) { this.liner = liner; }
     public void setMerchant(String merchant) { this.merchant = merchant; }
     public void setTripCode(String tripCode) { this.tripCode = tripCode; }
+    public void setDriverCode(String driverCode) { this.driverCode = driverCode; }
+    public void setBusNumber(String busNumber) { this.busNumber = busNumber; }
     public void setTrip(Trip trip) { this.trip = trip; }
     public void setReservedDate(Date reservedDate) { this.reservedDate = reservedDate; }
     public void setReservations(ArrayList<Reservation> reservations) { this.reservations = reservations; }
