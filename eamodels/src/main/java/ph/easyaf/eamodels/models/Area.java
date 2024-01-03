@@ -18,7 +18,7 @@ import java.util.Collections;
 public class Area extends EasyAFModel {
 
     @Bindable
-    private String name, merchant;
+    private String mongoId, name, merchant;
 
     @Bindable
     private ArrayList<Trip> trips;
@@ -28,10 +28,11 @@ public class Area extends EasyAFModel {
     }
 
     public Area(Parcel parcel) {
-        String[] strings = new String[2];
+        String[] strings = new String[3];
         parcel.readStringArray(strings);
-        name = strings[0];
-        merchant = strings[1];
+        mongoId = strings[0];
+        name = strings[1];
+        merchant = strings[2];
 
         Trip[] tripsArray = (Trip[])parcel.readParcelableArray(Trip.class.getClassLoader());
 
@@ -41,6 +42,7 @@ public class Area extends EasyAFModel {
 
     public Area(JSONObject object) {
         try {
+            if (object.has("_id")) mongoId = object.getString("_id");
             if (object.has("name")) name = object.getString("name");
             if (object.has("merchant")) merchant = object.getString("merchant");
 
@@ -59,6 +61,7 @@ public class Area extends EasyAFModel {
     public JSONObject toJSON() {
         JSONObject object = new JSONObject();
         try {
+            object.put("_id", mongoId);
             object.put("name", name);
             object.put("merchant", merchant);
 
@@ -75,7 +78,7 @@ public class Area extends EasyAFModel {
 
     @Override
     public void writeToParcel(@NonNull Parcel dest, int flags) {
-        dest.writeStringArray(new String[] { name, merchant });
+        dest.writeStringArray(new String[] { mongoId, name, merchant });
 
         Trip[] tripsArray = new Trip[trips.size()];
         for (int i = 0; i < trips.size(); i++) {
@@ -92,9 +95,15 @@ public class Area extends EasyAFModel {
     @Override
     public int describeContents() { return 0; }
 
+    public String getMongoId() { return mongoId; }
     public String getName() { return name; }
     public String getMerchant() { return merchant; }
     public ArrayList<Trip> getTrips() { return trips; }
+
+    public void setMongoId(String mongoId) {
+        this.mongoId = mongoId;
+        notifyPropertyChanged(BR.mongoId);
+    }
 
     public void setName(String name) {
         this.name = name;
