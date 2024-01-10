@@ -20,7 +20,8 @@ public class Trip extends EasyAFModel {
     private boolean enabled = true;
 
     @Bindable
-    private int maxSeats = 0, reservationCount = 0, selectedBoardingIndex = 0;
+    private int maxSeats = 0, reservationCount = 0,
+            selectedBoardingIndex = 0, selectedDroppingIndex = 0;
 
     @Bindable
     private double fare = 0, minFare = 0;
@@ -51,12 +52,13 @@ public class Trip extends EasyAFModel {
         parcel.readBooleanArray(booleans);
         enabled = booleans[0];
 
-        int[] ints = new int[4];
+        int[] ints = new int[5];
         parcel.readIntArray(ints);
         id = ints[0];
         maxSeats = ints[1];
         reservationCount = ints[2];
         selectedBoardingIndex = ints[3];
+        selectedDroppingIndex = ints[4];
 
         double[] doubles = new double[2];
         parcel.readDoubleArray(doubles);
@@ -99,6 +101,7 @@ public class Trip extends EasyAFModel {
         maxSeats = trip.getMaxSeats();
         reservationCount = trip.getReservationCount();
         selectedBoardingIndex = trip.getSelectedBoardingIndex();
+        selectedDroppingIndex = trip.getSelectedDroppingIndex();
         fare = trip.getFare();
         minFare = trip.getMinFare();
         mongoId = trip.getMongoId();
@@ -181,6 +184,8 @@ public class Trip extends EasyAFModel {
 
         selectedBoardingIndex = trip.getSelectedBoardingIndex();
 
+        selectedDroppingIndex = trip.getSelectedDroppingIndex();
+
         fare = trip.getFare();
         //notifyPropertyChanged(BR.fare);
 
@@ -258,7 +263,8 @@ public class Trip extends EasyAFModel {
 
     public void writeToParcel(Parcel parcel, int flags) {
         parcel.writeBooleanArray(new boolean[] { enabled });
-        parcel.writeIntArray(new int[] { id, maxSeats, reservationCount, selectedBoardingIndex });
+        parcel.writeIntArray(new int[] { id, maxSeats, reservationCount,
+                selectedBoardingIndex, selectedDroppingIndex });
         parcel.writeDoubleArray(new double[] { fare, minFare });
         parcel.writeLongArray(new long[] {
                 (date != null) ? date.getTime() : 0,
@@ -313,6 +319,7 @@ public class Trip extends EasyAFModel {
     public int getMaxSeats() { return maxSeats; }
     public int getReservationCount() { return reservationCount; }
     public int getSelectedBoardingIndex() { return selectedBoardingIndex; }
+    public int getSelectedDroppingIndex() { return selectedDroppingIndex; }
     public double getFare() { return fare; }
     public double getMinFare() { return minFare; }
     public String getMongoId() { return mongoId; }
@@ -345,6 +352,10 @@ public class Trip extends EasyAFModel {
     public void setSelectedBoardingIndex(int selectedBoardingIndex) {
         this.selectedBoardingIndex = selectedBoardingIndex;
         notifyPropertyChanged(BR.selectedBoardingIndex);
+    }
+    public void setSelectedDroppingIndex(int selectedDroppingIndex) {
+        this.selectedDroppingIndex = selectedDroppingIndex;
+        notifyPropertyChanged(BR.selectedDroppingIndex);
     }
     public void setFare(double fare) {
         this.fare = fare;

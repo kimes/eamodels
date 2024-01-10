@@ -23,6 +23,8 @@ public class Area extends EasyAFModel {
     @Bindable
     private ArrayList<Trip> trips;
 
+    public Area() {};
+
     public Area(int id) {
         super(id);
     }
