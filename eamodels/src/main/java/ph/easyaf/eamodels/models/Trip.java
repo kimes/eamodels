@@ -10,6 +10,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.Date;
 
 import ph.easyaf.eamodels.utils.DateTimeConverter;
@@ -39,6 +40,12 @@ public class Trip extends EasyAFModel {
     @Bindable
     private ObservableArrayList<Route> boardings = new ObservableArrayList<>(),
         dropOffs = new ObservableArrayList<>();
+
+    @Bindable
+    private ObservableArrayList<String> routes = new ObservableArrayList<>();
+
+    @Bindable
+    private ObservableArrayList<ArrayList<Double>> fareMatrix = new ObservableArrayList<>();
 
     @Bindable
     private Route selectedBoarding;
@@ -85,6 +92,21 @@ public class Trip extends EasyAFModel {
         ObservableArrayList<String> reservationList = new ObservableArrayList<>();
         parcel.readStringList(reservationList);
         reservations = reservationList;
+
+        parcel.readStringList(routes);
+
+        int fareMatrixSize = parcel.readInt();
+        for (int i = 0; i < fareMatrixSize; i++) {
+            ArrayList<Double> fareMatrixItem = new ArrayList<>();
+
+            int fareMatrixItemDoublesSize = parcel.readInt();
+            double[] fareMatrixItemDoubles = new double[fareMatrixItemDoublesSize];
+            parcel.readDoubleArray(fareMatrixItemDoubles);
+            for (int j = 0; j < fareMatrixItemDoubles.length; j++) {
+                fareMatrixItem.add(fareMatrixItemDoubles[j]);
+            }
+            fareMatrix.add(fareMatrixItem);
+        }
 
         ObservableArrayList<Route> boardingList = new ObservableArrayList<>();
         parcel.readTypedList(boardingList, Route.CREATOR);
@@ -150,6 +172,27 @@ public class Trip extends EasyAFModel {
                 JSONArray reservationsList = object.getJSONArray("reservations");
                 for (int i = 0; i < reservationsList.length(); i++) {
                     reservations.add(reservationsList.getString(i));
+                }
+            }
+
+            if (object.has("routes")) {
+                JSONArray routesList = object.getJSONArray("routes");
+                for (int i = 0; i < routesList.length(); i++) {
+                    routes.add(routesList.getString(i));
+                }
+            }
+
+            if (object.has("fare_matrix")) {
+                JSONArray fareMatrixList = object.getJSONArray("fare_matrix");
+                for (int i = 0; i < fareMatrixList.length(); i++) {
+                    ArrayList<Double> fareMatrixItem = new ArrayList<>();
+
+                    JSONArray fareMatrixListItem = fareMatrixList.getJSONArray(i);
+                    for (int j = 0; j < fareMatrixListItem.length(); j++) {
+                        fareMatrixItem.add(fareMatrixListItem.getDouble(j));
+                    }
+
+                    fareMatrix.add(fareMatrixItem);
                 }
             }
 
@@ -273,6 +316,19 @@ public class Trip extends EasyAFModel {
                 (expiresDate != null) ? expiresDate.getTime() : 0 });
         parcel.writeStringArray(new String[] { mongoId, origin, destination, liner, merchant, vehicle, code });
         parcel.writeStringList(reservations);
+
+        parcel.writeStringList(routes);
+
+        parcel.writeInt(fareMatrix.size());
+        for (int i = 0; i < fareMatrix.size(); i++) {
+            parcel.writeInt(fareMatrix.get(i).size());
+            double[] fareMatrixItemDoubles = new double[fareMatrix.get(i).size()];
+            for (int j = 0; j < fareMatrix.get(i).size(); j++) {
+                fareMatrixItemDoubles[j] = fareMatrix.get(i).get(j);
+            }
+            parcel.writeDoubleArray(fareMatrixItemDoubles);
+        }
+
         parcel.writeTypedList(boardings);
         parcel.writeTypedList(dropOffs);
     }
@@ -295,6 +351,20 @@ public class Trip extends EasyAFModel {
             if (time != null) object.put("time", DateTimeConverter.toISODateUtc(time));
             if (startDate != null) object.put("start_date", DateTimeConverter.toISODateUtc(startDate));
             if (expiresDate != null) object.put("expires_date", DateTimeConverter.toISODateUtc(expiresDate));
+
+            JSONArray routesList = new JSONArray();
+            for (int i = 0; i < routes.size(); i++) {
+                routesList.put(routes.get(i));
+            }
+
+            JSONArray fareMatrixList = new JSONArray();
+            for (int i = 0; i < fareMatrix.size(); i++) {
+                JSONArray fareMatrixListItem = new JSONArray();
+                for (int j = 0; j < fareMatrix.get(i).size(); j++) {
+                    fareMatrixListItem.put(fareMatrix.get(i).get(j));
+                }
+                fareMatrixList.put(fareMatrixListItem);
+            }
 
             JSONArray boardingsList = new JSONArray();
             for (int i = 0; i < boardings.size(); i++) {
@@ -334,6 +404,8 @@ public class Trip extends EasyAFModel {
     public Date getStartDate() { return startDate; }
     public Date getExpiresDate() { return expiresDate; }
     public ObservableArrayList<String> getReservations() { return reservations; }
+    public ObservableArrayList<String> getRoutes() { return routes; }
+    public ObservableArrayList<ArrayList<Double>> getFareMatrix() { return fareMatrix; }
     public ObservableArrayList<Route> getBoardings() { return boardings; }
     public ObservableArrayList<Route> getDropOffs() { return dropOffs; }
 
@@ -411,6 +483,14 @@ public class Trip extends EasyAFModel {
     public void setReservations(ObservableArrayList<String> reservations) {
         this.reservations = reservations;
         notifyPropertyChanged(BR.reservations);
+    }
+    public void setRoutes(ObservableArrayList<String> routes) {
+        this.routes = routes;
+        notifyPropertyChanged(BR.routes);
+    }
+    public void setFareMatrix(ObservableArrayList<ArrayList<Double>> fareMatrix) {
+        this.fareMatrix = fareMatrix;
+        notifyPropertyChanged(BR.fareMatrix);
     }
     public void setBoardings(ObservableArrayList<Route> boardings) {
         this.boardings = boardings;
