@@ -19,7 +19,7 @@ import ph.easyaf.eamodels.utils.DateTimeConverter;
 public class Reservation extends EasyAFModel {
 
     // DISCOUNT | SENIOR = 1, PWD = 2, STUDENT = 3
-    private int passengerType = 0, seat, status = 0;
+    private int passengerType = 0, seat, status = 0, ticket = 0;
     private double fare = 0, serviceFee = 0;
     private String mongoId = "", origin = "", destination = "",
             boarding = "", dropping = "", referenceNo = "", trip = "",
@@ -40,12 +40,13 @@ public class Reservation extends EasyAFModel {
     }
 
     public Reservation(Parcel parcel) {
-        int[] ints = new int[4];
+        int[] ints = new int[5];
         parcel.readIntArray(ints);
         id = ints[0];
         passengerType = ints[1];
         seat = ints[2];
         status = ints[3];
+        ticket = ints[4];
 
         double[] doubles = new double[2];
         parcel.readDoubleArray(doubles);
@@ -158,6 +159,7 @@ public class Reservation extends EasyAFModel {
             if (object.has("seat")) seat = object.getInt("seat");
             if (object.has("passenger_type")) passengerType = object.getInt("passenger_type");
             if (object.has("status")) status = object.getInt("status");
+            if (object.has("ticket")) ticket = object.getInt("ticket");
             if (object.has("fare")) fare = object.getDouble("fare");
             if (object.has("service_fee")) serviceFee = object.getDouble("service_fee");
             if (object.has("origin")) origin = object.getString("origin");
@@ -192,6 +194,7 @@ public class Reservation extends EasyAFModel {
             if (!mongoId.isEmpty()) object.put("_id", mongoId);
             object.put("seat", seat);
             object.put("status", status);
+            object.put("ticket", ticket);
             object.put("passenger_type", passengerType);
             object.put("origin", origin);
             object.put("destination", destination);
@@ -219,7 +222,7 @@ public class Reservation extends EasyAFModel {
     }
 
     public void writeToParcel(Parcel parcel, int flags) {
-        parcel.writeIntArray(new int[] { id, passengerType, seat, status });
+        parcel.writeIntArray(new int[] { id, passengerType, seat, status, ticket });
         parcel.writeDoubleArray(new double[] { fare, serviceFee });
         parcel.writeLongArray(new long[] {
                 (reservedDate != null) ? reservedDate.getTime() : 0,
@@ -235,6 +238,7 @@ public class Reservation extends EasyAFModel {
     public int getPassengerType() { return passengerType; }
     public int getSeat() { return seat; }
     public int getStatus() { return status; }
+    public int getTicket() { return ticket; }
     public double getFare() { return fare; }
     @Deprecated
     public double getServiceFee() { return serviceFee; }
@@ -258,6 +262,7 @@ public class Reservation extends EasyAFModel {
     public void setPassengerType(int passengerType) { this.passengerType = passengerType; }
     public void setSeat(int seat) { this.seat = seat; }
     public void setStatus(int status) { this.status = status; }
+    public void setTicket(int ticket) { this.ticket = ticket; }
     public void setFare(double fare) { this.fare = fare; }
     @Deprecated
     public void setServiceFee(double serviceFee) { this.serviceFee = serviceFee; }
