@@ -191,7 +191,9 @@ public class Reservation extends EasyAFModel {
     public JSONObject toJSON() {
         JSONObject object = new JSONObject();
         try {
-            if (!mongoId.isEmpty()) object.put("_id", mongoId);
+            if (mongoId != null) {
+                if (!mongoId.isEmpty()) object.put("_id", mongoId);
+            }
             object.put("seat", seat);
             object.put("status", status);
             object.put("ticket", ticket);
